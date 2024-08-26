@@ -5,7 +5,6 @@
  *                                                                                           *
  ******************************************************************************************* */
 
-
 /**
  * Returns the result of concatenation of two strings.
  *
@@ -18,10 +17,9 @@
  *   'aa',''    => 'aa'
  *   '',  'bb'  => 'bb'
  */
-function concatenateStrings(str1, str2) {
-  return str1 + str2;
+function concatenateStrings(value1, value2) {
+  return value1 + value2;
 }
-
 
 /**
  * Returns the length of given string.
@@ -34,7 +32,7 @@ function concatenateStrings(str1, str2) {
  *   'b'     => 1
  *   ''      => 0
  */
-function getStringLength(str) {
+function getStringLength(str = '') {
   return str.length;
 }
 
@@ -65,11 +63,9 @@ function getStringFromTemplate(firstName, lastName) {
  *   'Hello, John Doe!' => 'John Doe'
  *   'Hello, Chuck Norris!' => 'Chuck Norris'
  */
-function extractNameFromTemplate(str) {
-  return str.slice(7, -1);
+function extractNameFromTemplate(str = '') {
+  return str.replace('Hello,', '').replace('!', '').trim();
 }
-
-
 /**
  * Returns a first char of the given string.
  *
@@ -81,12 +77,8 @@ function extractNameFromTemplate(str) {
  *   'cat'       => 'c'
  */
 function getFirstChar(str = '') {
-  if (typeof str !== 'string') {
-    throw new TypeError('Expected a string');
-  }
   return str[0];
 }
-
 
 /**
  * Removes a leading and trailing whitespace characters from string.
@@ -99,8 +91,8 @@ function getFirstChar(str = '') {
  *   'cat'              => 'cat'
  *   '\tHello, World! ' => 'Hello, World!'
  */
-function removeLeadingAndTrailingWhitespaces(value) {
-  return value.trim();
+function removeLeadingAndTrailingWhitespaces(str = '') {
+  return str.trim();
 }
 
 /**
@@ -115,11 +107,7 @@ function removeLeadingAndTrailingWhitespaces(value) {
  *   'cat', 3 => 'catcatcat'
  */
 function repeatString(value, count) {
-  let str = '';
-  for (let i = 0; i < count; i = 1 + i) {
-    str = value + str;
-  }
-  return str;
+  return new Array(count).fill(value).join('');
 }
 
 /**
@@ -135,10 +123,7 @@ function repeatString(value, count) {
  *   'ABABAB','BA' => 'ABAB'
  */
 function removeFirstOccurrences(str, value) {
-  const arr = str.split('');
-
-  arr.splice(str.indexOf(value), value.length);
-  return arr.join('');
+  return str.replace(value, '');
 }
 
 /**
@@ -153,9 +138,8 @@ function removeFirstOccurrences(str, value) {
  *   '<a>' => 'a'
  */
 function unbracketTag(str) {
-  return str.split('').slice(1, -1).join('');
+  return str.replace('<', '').replace('>', '');
 }
-
 
 /**
  * Converts all characters of the specified string into the upper case
@@ -170,6 +154,7 @@ function unbracketTag(str) {
 function convertToUpperCase(str) {
   return str.toUpperCase();
 }
+
 /**
  * Extracts e-mails from single string with e-mails list delimeted by semicolons
  *
@@ -185,7 +170,7 @@ function convertToUpperCase(str) {
  *   ],
  *   'info@gmail.com' => ['info@gmail.com']
  */
-function extractEmails(str) {
+function extractEmails(str = '') {
   return str.split(';');
 }
 
@@ -213,13 +198,11 @@ function extractEmails(str) {
  *
  */
 function getRectangleString(width, height) {
-  const tl = `┌${'─'.repeat(width - 2)}┐\n`;
-  const ml = `│${' '.repeat(width - 2)}│\n`;
-  const dl = `└${'─'.repeat(width - 2)}┘\n`;
-  return tl + ml.repeat(height - 2) + dl;
+  const top = `┌${'─'.repeat(width - 2)}┐\n`;
+  const bottom = `└${'─'.repeat(width - 2)}┘\n`;
+  const middle = `${`│${' '.repeat(width - 2)}│\n`.repeat(height - 2)}`;
+  return top + middle + bottom;
 }
-
-
 /**
  * Encode specified string with ROT13 cipher
  * See details:  https://en.wikipedia.org/wiki/ROT13
@@ -236,11 +219,22 @@ function getRectangleString(width, height) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
+
 function encodeToRot13(str) {
-  return str.replace(/[A-Za-z]/g, (char) => {
-    const base = char <= 'Z' ? 65 : 97; // Код ASCII для 'A' и 'a'
-    return String.fromCharCode(((char.charCodeAt(0) - base + 13) % 26) + base);
-  });
+  return str
+    .split('')
+    .map((el) => {
+      const char = el.charCodeAt();
+
+      if ((char >= 97 && char < 110) || (char >= 65 && char <= 77)) {
+        return String.fromCharCode(char + 13);
+      }
+      if ((char >= 77 && char < 91) || (char >= 110 && char <= 122)) {
+        return String.fromCharCode(char - 13);
+      }
+      return el;
+    })
+    .join('');
 }
 
 /**
@@ -257,10 +251,8 @@ function encodeToRot13(str) {
  *   isString(new String('test')) => true
  */
 function isString(value) {
-  if (typeof value === 'string' || value instanceof String) return true;
-  return false;
+  return Object.prototype.toString.call(value) === '[object String]';
 }
-
 
 /**
  * Returns playid card id.
@@ -286,14 +278,63 @@ function isString(value) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(str) {
-  const arr = ['A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣',
-    'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', '10♦', 'J♦', 'Q♦', 'K♦',
-    'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', '10♥', 'J♥', 'Q♥', 'K♥',
-    'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', '10♠', 'J♠', 'Q♠', 'K♠'];
-  return arr.indexOf(str);
+function getCardId(value) {
+  const cards = [
+    'A♣',
+    '2♣',
+    '3♣',
+    '4♣',
+    '5♣',
+    '6♣',
+    '7♣',
+    '8♣',
+    '9♣',
+    '10♣',
+    'J♣',
+    'Q♣',
+    'K♣',
+    'A♦',
+    '2♦',
+    '3♦',
+    '4♦',
+    '5♦',
+    '6♦',
+    '7♦',
+    '8♦',
+    '9♦',
+    '10♦',
+    'J♦',
+    'Q♦',
+    'K♦',
+    'A♥',
+    '2♥',
+    '3♥',
+    '4♥',
+    '5♥',
+    '6♥',
+    '7♥',
+    '8♥',
+    '9♥',
+    '10♥',
+    'J♥',
+    'Q♥',
+    'K♥',
+    'A♠',
+    '2♠',
+    '3♠',
+    '4♠',
+    '5♠',
+    '6♠',
+    '7♠',
+    '8♠',
+    '9♠',
+    '10♠',
+    'J♠',
+    'Q♠',
+    'K♠',
+  ];
+  return cards.indexOf(value);
 }
-
 
 module.exports = {
   concatenateStrings,
@@ -307,6 +348,11 @@ module.exports = {
   unbracketTag,
   convertToUpperCase,
   extractEmails,
+  getRectangleString,
+  encodeToRot13,
+  isString,
+  getCardId,
+};
   getRectangleString,
   encodeToRot13,
   isString,
