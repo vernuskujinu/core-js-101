@@ -80,9 +80,13 @@ function extractNameFromTemplate(str) {
  *   'John Doe'  => 'J'
  *   'cat'       => 'c'
  */
-function getFirstChar(str) {
-  return str.slice(0, 1);
+function getFirstChar(str = '') {
+  if (typeof str !== 'string') {
+    throw new TypeError('Expected a string');
+  }
+  return str[0];
 }
+
 
 /**
  * Removes a leading and trailing whitespace characters from string.
@@ -233,9 +237,10 @@ function getRectangleString(width, height) {
  *
  */
 function encodeToRot13(str) {
-  const originalAlpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const cipher = 'nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM';
-  return str.replace(/[a-z]/gi, (letter) => cipher[originalAlpha.indexOf(letter)]);
+  return str.replace(/[A-Za-z]/g, (char) => {
+    const base = char <= 'Z' ? 65 : 97; // Код ASCII для 'A' и 'a'
+    return String.fromCharCode(((char.charCodeAt(0) - base + 13) % 26) + base);
+  });
 }
 
 /**
