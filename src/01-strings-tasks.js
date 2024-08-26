@@ -353,8 +353,3 @@ module.exports = {
   isString,
   getCardId,
 };
-  getRectangleString,
-  encodeToRot13,
-  isString,
-  getCardId,
-};
